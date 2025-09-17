@@ -6,7 +6,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const emailSender=async(verifyCode)=>{
 try {
     await resend.emails.send({
-    from: 'Acme <onboarding@resend.dev>',
+    from: 'Easystay <onboarding@resend.dev>',
     to: ['sifatshasan@gmail.com'],
     subject: 'Verify code from Linkup',
     react: AWSVerifyEmail({ verifyCode}),
