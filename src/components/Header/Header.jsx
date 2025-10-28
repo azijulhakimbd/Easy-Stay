@@ -47,8 +47,7 @@ export default function Header() {
     { name: "Stays", link: "/stays" },
     ...(session?.user?.role === "user"
       ? [{ name: "Dashboard", link: "/dashboard/guest" }] : session?.user?.role === "host"
-      ? [{ name: "Dashboard", link: "/host" }]
-      : [{name:"Dashboard",link:"/dash/admin"}]),
+      ? [{ name: "Dashboard", link: "/host" }] : session?.user?.role === "admin" ? [{name:"Dashboard",link:"/dash/admin"}] :[]),
     { name: "About", link: "/about" },
     { name: "Contact", link: "/contact" },
     { name: "Be a Host", link: "/become-a-host" },
