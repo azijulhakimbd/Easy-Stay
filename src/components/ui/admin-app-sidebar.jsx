@@ -26,7 +26,7 @@ const navItems = [
   { title: "Manage Bookings", href: "/dash/admin/managebookings", icon: IconCalendarEvent },
   { title: "Approve Hosts", href: "/dash/admin/approvehosts", icon: IconAlbum },
   { title: "Manage Reviews", href: "/dash/admin/managereviews", icon:  MessageSquare},
-  { title: "Recent Activity", href: "/dash/admin/recentactivity", icon: Clock },
+  // { title: "Recent Activity", href: "/dash/admin/recentactivity", icon: Clock },
   // { title: "Most Favorites", href: "/dash/admin/mostfavorites", icon: IconHeart },
 ];
 
