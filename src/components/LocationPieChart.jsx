@@ -30,45 +30,51 @@ const chartData = [
 
 const chartConfig = {
   visitors: {
-    label: "Visitors",
+    label: "Users",
   },
   chrome: {
-    label: "Chrome",
+    label: "Dhaka",
     color: "var(--chart-1)",
   },
   safari: {
-    label: "Safari",
+    label: "Gazipur",
     color: "var(--chart-2)",
   },
   firefox: {
-    label: "Firefox",
+    label: "Sirajgonj",
     color: "var(--chart-3)",
   },
   edge: {
-    label: "Edge",
+    label: "Jamalpur",
     color: "var(--chart-4)",
   },
   other: {
     label: "Other",
     color: "var(--chart-5)",
   },
-} satisfies ChartConfig;
-
-export function RoundedPieChart() {
+} 
+const color=[
+     "var(--color-chrome)","var(--color-safari)", "var(--color-firefox)","var(--color-other)", "var(--color-firefox)"
+]
+export function LocationPieChart({locationData}) {
+   const newArray = locationData?.map((item, index) => ({
+  ...item, 
+  fill: color[index % color.length]
+}));
+    
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
         <CardTitle>
-          Pie Chart
+          
           <Badge
             variant="outline"
             className="text-green-500 bg-green-500/10 border-none ml-2"
           >
-            <TrendingUp className="h-4 w-4" />
-            <span>5.2%</span>
+           Origin
           </Badge>
         </CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+      
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -77,23 +83,23 @@ export function RoundedPieChart() {
         >
           <PieChart>
             <ChartTooltip
-              content={<ChartTooltipContent nameKey="visitors" hideLabel />}
+              content={<ChartTooltipContent nameKey="visitors"  />}
             />
             <Pie
-              data={chartData}
+              data={newArray}
               innerRadius={30}
-              dataKey="visitors"
+              dataKey="users"
               radius={10}
               cornerRadius={8}
               paddingAngle={4}
             >
               <LabelList
-                dataKey="visitors"
+                dataKey="location"
                 stroke="none"
                 fontSize={12}
                 fontWeight={500}
                 fill="currentColor"
-                formatter={(value: number) => value.toString()}
+                formatter={(value) => value.toString()}
               />
             </Pie>
           </PieChart>

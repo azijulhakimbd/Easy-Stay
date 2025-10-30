@@ -22,7 +22,7 @@ export default function Header() {
   
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+console.log(session?.user?._id)
   const userNotExits = (
     <div className="flex items-center gap-4">
       <NavbarButton href={"/login"}>Login</NavbarButton>

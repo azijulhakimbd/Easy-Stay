@@ -23,7 +23,7 @@ const formatCount = (num) => {
   if (num >= 1000) {
     return (num / 1000).toFixed(1) + 'k';
   }
-  return num.toString();
+  return num?.toString();
 };
 
 // --- SHADCN/UI MIMIC COMPONENTS (Styled with Tailwind) ---
@@ -100,30 +100,25 @@ const Card = ({ children, className = '' }) => (
 
 
 
-const ReviewCard = ({ data = mockReviewData }) => {
-  
-  // Calculate the maximum count among all star ratings to determine 100% bar length
-  const maxRatingCount = useMemo(() => {
-    return Math.max(...Object.values(data.ratings));
-  }, [data.ratings]);
+const ReviewCard = ({ reviewData = mockReviewData }) => {
+console.log(reviewData,"this is review data")
+  // Calculate max count for bar length
+   const ratings = reviewData?.ratings || { 5:0,4:0,3:0,2:0,1:0 };
 
+  // Calculate max count for bar length
+  const maxRatingCount = useMemo(() => {
+    return Math.max(...Object.values(ratings));
+  }, [ratings])
   return (
-    <Card className="p-6 space-y-6">
-      
-      {/* 1. Key Metrics Section (Average Rating & Total Reviews) */}
+    <Card className="p-6 space-y-6 col-span-4">
+      {/* 1. Key Metrics Section */}
       <div className="grid grid-cols-2 gap-4 pb-4">
-        
-        {/* Average Rating Box */}
         <div className="flex flex-col items-start p-4 rounded-lg bg-muted/70 dark:bg-muted/30 transition-colors">
-          <span className="text-4xl font-extrabold text-foreground">{data.averageRating.toFixed(1)}</span>
+          <span className="text-4xl font-extrabold text-foreground">{reviewData?.averageRating?.toFixed(1)}</span>
           <span className="text-sm text-muted-foreground">Average rating</span>
         </div>
-        
-        {/* Reviews Count Box */}
         <div className="flex flex-col items-start p-4 rounded-lg bg-muted/70 dark:bg-muted/30 transition-colors">
-          <span className="text-4xl font-extrabold text-foreground">
-            {formatCount(data.totalReviews)}
-          </span>
+          <span className="text-4xl font-extrabold text-foreground">{formatCount(reviewData?.totalReviews)}</span>
           <span className="text-sm text-muted-foreground">Reviews</span>
         </div>
       </div>
@@ -131,40 +126,27 @@ const ReviewCard = ({ data = mockReviewData }) => {
       {/* 2. Reviews Header and Star Rating Summary */}
       <div className="flex justify-between items-center border-b pb-4 border-border/70">
         <h3 className="text-xl font-semibold text-foreground">Reviews</h3>
-        <StarRatingDisplay rating={data.averageRating} />
+        <StarRatingDisplay rating={reviewData?.averageRating} />
       </div>
 
-      {/* 3. Rating Distribution (Bar Chart) */}
+      {/* 3. Rating Distribution */}
       <div className="space-y-3">
         {ratingLevels.map((star) => {
-          const count = data.ratings[star] || 0;
-          // Calculate percentage: (count / max count) * 100
+          console.log(star)
+          const count = reviewData?.ratings[star] || 0;
           const percent = maxRatingCount > 0 ? (count / maxRatingCount) * 100 : 0;
-          
+
           return (
             <div key={star} className="flex items-center space-x-3">
-              {/* Star Label (1, 2, 3, 4, 5) */}
-              <span className="w-4 text-sm font-medium text-right text-foreground">
-                {star}
-              </span>
-              
-              {/* Progress Bar */}
+              <span className="w-4 text-sm font-medium text-right text-foreground">{star}</span>
               <div className="flex-grow">
-                 <ProgressBar value={percent} />
+                <ProgressBar value={percent} />
               </div>
-
-              {/* Count */}
-              <span className="w-6 text-sm text-right text-muted-foreground">
-                {count}
-              </span>
+              <span className="w-6 text-sm text-right text-muted-foreground">{count}</span>
             </div>
           );
         })}
       </div>
-
-      {/* 4. CTA Button */}
-   
-      
     </Card>
   );
 };
