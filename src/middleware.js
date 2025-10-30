@@ -69,6 +69,13 @@ export default withAuth(
 
     // frontend protection
 // ------------------------u--------------0------------------------------------------
+    if (pathname==="/stay/") {
+      if (token) {
+        return NextResponse.next();
+      }
+      return NextResponse.redirect(new URL("/unauthorized", req.url));
+    }
+
     if (pathname.startsWith("/host")) {
       if (token?.role === "host" || token?.role === "admin") {
         return NextResponse.next();
@@ -100,7 +107,7 @@ export default withAuth(
 
         if (
           pathname.startsWith("/host") ||
-          pathname.startsWith("/stays/") ||
+         
           pathname.startsWith("/dashboard/guest") ||
           pathname.startsWith("/dash/admin") ||
            pathname.startsWith("/api/property") ||
@@ -110,6 +117,11 @@ export default withAuth(
         }
         if (pathname === "/stays") {
           return true;
+        }
+
+
+        if (pathname==='/stay/'){
+          return !!token
         }
       },
     },
