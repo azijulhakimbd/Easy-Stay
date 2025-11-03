@@ -2,8 +2,9 @@
 @import "tw-animate-css";
 @import "leaflet/dist/leaflet.css";
 
-/* @custom-variant dark (&:is(.dark *)); */
+@custom-variant dark (&:is(.dark *));
 
+/* @custom-variant dark (&:is(.dark *)); */
 
 @theme inline {
   --color-background: var(--background);
@@ -141,8 +142,6 @@
   --sidebar-border: #E5E7EB;
   --sidebar-ring: #2563EB;
 }
-
-
 
 @layer base {
   * {

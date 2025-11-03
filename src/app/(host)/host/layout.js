@@ -21,22 +21,25 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import SessionProviderWrapper from "@/app/Components/SessionProvider/SessionProviderWrapper";
-import { ChartBarIcon } from "lucide-react";
+import { ChartBarIcon, LogOutIcon } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const baseUrl=process.env.NEXT_PUBLIC_BASE_URL
 
   const links = [
     { label: "Analytics", href: "/host", icon: IconBrandTabler },
     { label: "Property Management", href: "/host/property/management", icon: IconUserBolt },
     { label: "Bookings", href: "/host/bookings", icon: IconSettings },
-      { label: "Chat", href: "/host/chat", icon: ChartBarIcon },
-    { label: "Logout", href: "/logout", icon: IconArrowLeft },
+    { label: "Chat", href: "/host/chat", icon: ChartBarIcon },
+   
   ];
 
   const SidebarLinks = () => (
-    <nav className="flex flex-col gap-2 px-4 py-4">
+    <nav className="">
+      <div className="flex flex-col gap-2 px-4 py-4">
       {links.map(({ label, href, icon: Icon }) => (
         <Link
           key={href}
@@ -52,7 +55,18 @@ export default function DashboardLayout({ children }) {
           <Icon className="h-5 w-5 shrink-0" />
           {label}
         </Link>
+   
       ))}
+      <div className="flex justify-start items-center px-4">
+        <LogOutIcon/>
+        <button    className={cn(
+            "flex items-center gap-3 rounded-lg px-3 py-2 font-semibold cursor-pointer w-20  text-sm transition-colors" )} onClick={()=>signOut({callbackUrl:`${baseUrl}/login`})}>
+        Logout
+      </button>
+      </div>
+      </div>
+    
+           
     </nav>
   );
 

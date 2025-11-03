@@ -43,7 +43,7 @@ export default function SignupForm() {
       try {
       setIsSignupLoading(true)
       const response=await signIn("credentials",{
-    redirect:true,
+    redirect:false,
     email:data?.email,
     password:data?.password,
     callbackUrl:callBackUrl

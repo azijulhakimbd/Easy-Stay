@@ -1,26 +1,56 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import axios from "axios";
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+} from "recharts";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-export default function UserAnalytics() {
-  const [data, setData] = useState(null);
+export default function AnalyticsOverview() {
+  const [userGrowth, setUserGrowth] = useState([]);
+  const [roleData, setRoleData] = useState([]);
+  const [bookingsByCity, setBookingsByCity] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const ROLE_COLORS = ["#2563eb", "#10b981", "#f97316"];
+
+  // Fetch Role Distribution
   useEffect(() => {
-    const fetchAnalytics = async () => {
-      try {
-        const res = await axios.get("/api/allanalytics");
-        setData(res.data);
-      } catch (error) {
-        console.error("Error fetching analytics:", error);
-      } finally {
+    axios
+      .get("/api/analytics/role-distribution")
+      .then((res) => setRoleData(res.data))
+      .catch(() => setRoleData([]));
+  }, []);
+
+  // Fetch Bookings by City/Division
+  useEffect(() => {
+    axios
+      .get("/api/analytics/bookings-by-city")
+      .then((res) => setBookingsByCity(res.data.data))
+      .catch(() => setBookingsByCity([]));
+  }, []);
+
+  // Fetch User Growth
+  useEffect(() => {
+    axios
+      .get("/api/analytics/user-growth")
+      .then((res) => {
+        setUserGrowth(res.data);
         setLoading(false);
-      }
-    };
-    fetchAnalytics();
+      })
+      .catch(() => setUserGrowth([]));
   }, []);
 
   if (loading) {
@@ -31,101 +61,115 @@ export default function UserAnalytics() {
     );
   }
 
-  if (!data) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <p className="text-gray-500">No data available</p>
-      </div>
-    );
-  }
-
-  const totalUsers = data?.totalUser?.[0]?.totalUser || 0;
-  const totalProperties = data?.totalProperty?.[0]?.totalProperty || 0;
-  const totalBookings = data?.totalBookings?.[0]?.totalBookings || 0;
-  const bookingsAnalytics = data?.bookingsAnalytics || [];
-
-  // Find the most active month (highest revenue)
-//   const popularMonth = bookingsAnalytics.reduce(
-//   (max, current) =>
-//     current.totalRevenue > max.totalRevenue ? current : max,
-//   { totalRevenue: 0 } // initial fallback value
-// );
-
-  
-
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
-      {/* Stat Cards */}
-      <Card className="shadow-sm border rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100">
-        <CardHeader>
-          <CardTitle className="text-blue-700 text-lg">Total Properties</CardTitle>
-        </CardHeader>
-        <CardContent className='ml-4'>
-          <p className="text-3xl font-bold text-blue-800">{totalProperties}</p>
-          <p className="text-sm text-blue-600 mt-1">Available for booking</p>
-        </CardContent>
-      </Card>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-4">
 
-      <Card className="shadow-sm border rounded-2xl bg-gradient-to-br from-green-50 to-green-100">
+      {/* 🧠 User Growth Chart */}
+      <Card className="shadow-sm border rounded-2xl lg:col-span-2">
         <CardHeader>
-          <CardTitle className="text-green-700 text-lg">Active Users</CardTitle>
-        </CardHeader>
-        <CardContent className='ml-4'>
-          <p className="text-3xl font-bold text-green-800">{totalUsers}</p>
-          <p className="text-sm text-green-600 mt-1">Trusted members</p>
-        </CardContent>
-      </Card>
-
-      <Card className="shadow-sm border rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100">
-        <CardHeader>
-          <CardTitle className="text-purple-700 text-lg">Total Bookings</CardTitle>
-        </CardHeader>
-        <CardContent className='ml-4'>
-          <p className="text-3xl font-bold text-purple-800">{totalBookings}</p>
-          <p className="text-sm text-purple-600 mt-1">Completed so far</p>
-        </CardContent>
-      </Card>
-
-      {/* Popular Month */}
-      <Card className="md:col-span-3 shadow-sm border rounded-2xl bg-gradient-to-br from-yellow-50 to-yellow-100">
-        <CardHeader>
-          <CardTitle className="text-yellow-700 text-lg">Most Popular Month</CardTitle>
-        </CardHeader>
-        <CardContent className='ml-4'>
-          {/* <p className="text-2xl font-semibold text-yellow-800">{popularMonth.month}</p> */}
-          <p className="text-sm text-yellow-700 mt-1">
-            This month had the highest booking activity on our platform.
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Chart */}
-      <Card className="md:col-span-3 border shadow-sm rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-lg">Booking Activity Trend</CardTitle>
+          <CardTitle className="text-lg">User Growth Over Time</CardTitle>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={bookingsAnalytics}>
+            <LineChart data={userGrowth}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
-              <YAxis hide />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#fff",
-                  border: "1px solid #ccc",
-                  borderRadius: "8px",
-                }}
-                labelStyle={{ fontWeight: "bold" }}
+              <YAxis />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="newUsers"
+                stroke="#4f46e5"
+                strokeWidth={3}
               />
-              <Bar dataKey="totalRevenue" fill="#8884d8" radius={[8, 8, 0, 0]} name="Activity Level" />
-            </BarChart>
+            </LineChart>
           </ResponsiveContainer>
-          <p className="text-sm text-gray-500 mt-2 text-center">
-            *Chart represents booking popularity per month
-          </p>
         </CardContent>
       </Card>
+
+      {/* 👥 User Role Distribution */}
+      <Card className="shadow-sm border rounded-2xl">
+  <CardHeader>
+    <CardTitle className="text-lg">User Role Distribution</CardTitle>
+  </CardHeader>
+  <CardContent className="flex flex-col items-center">
+    <ResponsiveContainer width="100%" height={250}>
+      <PieChart>
+        <Pie
+          data={roleData}
+          cx="50%"
+          cy="50%"
+          innerRadius={60}
+          outerRadius={100}
+          paddingAngle={5}
+          dataKey="value"
+        >
+          {roleData.map((entry, index) => (
+            <Cell
+              key={index}
+              fill={ROLE_COLORS[index % ROLE_COLORS.length]}
+            />
+          ))}
+        </Pie>
+        <Tooltip />
+      </PieChart>
+    </ResponsiveContainer>
+
+    {/* Display roles without hover */}
+    <div className="mt-4 flex flex-col gap-2 w-full">
+      {roleData.map((role, index) => (
+        <div key={index} className="flex justify-between px-2">
+          <span className="flex items-center gap-2">
+            <span
+              className="w-4 h-4 rounded-full"
+              style={{ backgroundColor: ROLE_COLORS[index % ROLE_COLORS.length] }}
+            />
+            {role.name || role.label || `Role ${index + 1}`}
+          </span>
+          <span>{role.value}</span>
+        </div>
+      ))}
+    </div>
+  </CardContent>
+</Card>
+
+
+      {/* 📦 Bookings by Division */}
+      <Card className="shadow-sm border rounded-2xl lg:col-span-3">
+        <CardHeader>
+          <CardTitle className="text-lg">Bookings by Division</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={bookingsByCity} layout="vertical">
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis type="number" />
+              <YAxis type="category" dataKey="city" />
+              <Tooltip
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    const data = payload[0].payload;
+                    return (
+                      <div className="bg-white p-2 border rounded shadow-md">
+                        <p className="font-semibold">{data.city}</p>
+                        <p>Bookings: {data.bookings}</p>
+                        <p>Revenue: ${data.totalRevenue}</p>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
+              <Bar
+                dataKey="bookings"
+                fill="#6366f1"
+                radius={[0, 8, 8, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
     </div>
   );
 }

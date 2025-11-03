@@ -56,6 +56,13 @@ export function AppSidebar() {
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
+             <div className="flex justify-start items-center px-4">
+                  <LogOutIcon/>
+                  <button    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2 font-semibold cursor-pointer w-20  text-sm transition-colors" )} onClick={()=>signOut({callbackUrl:`${baseUrl}/login`})}>
+                  Logout
+                </button>
+                </div>
         </SidebarMenu>
       </SidebarContent>
 

@@ -19,7 +19,7 @@ import { authOptions } from "./api/auth/[...nextauth]/options";
 const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins",
-  weight: ["400", "500", "600", "700"], // Regular to Bold
+  weight: ["400", "500", "600", "700"], 
 });
 
 const roboto = Roboto({
@@ -48,7 +48,7 @@ export  default async function RootLayout({ children }) {
         enableSystems
          >
               <ConditionalLayout >
-               <main className="dark:bg-black">
+               <main className="  dark:bg-black">
                  {children}
                </main>
                 </ConditionalLayout>

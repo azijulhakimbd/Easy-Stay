@@ -24,7 +24,7 @@ export async function GET(request, { params }) {
 export async function PATCH(request, { params }) {
   await dbConnect();
 
-  const { id } = params;
+  const { id } =await params;
 
   try {
     const body = await request.json();
