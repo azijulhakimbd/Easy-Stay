@@ -14,8 +14,6 @@ import ConditionalLayout from "@/components/ConditionalLayout";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/options";
 
-  
-
 const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins",
